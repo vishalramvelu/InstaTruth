@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}InstaTruth - Verify Social Media Videos{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 md:px-12 py-16 md:py-24 text-center max-w-4xl">
+    <!-- Announcement banner -->
+    <div class="mb-10 flex justify-center">
+        <a href="#" class="inline-flex items-center text-sm text-gray-600 hover:text-black">
+            <span>Announcing our new AI-powered video analysis engine</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </a>
+    </div>
+    
+    <!-- Main headline -->
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
+        Verify the truth of<br>any social media video
+    </h1>
+    
+    <!-- Subtitle -->
+    <p class="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+        Our advanced AI analyzes TikTok, Instagram Reels, and viral videos to distinguish real news from misinformation.
+    </p>
+    
+    <!-- Link Input Form -->
+    <div class="mb-12 max-w-2xl mx-auto">
+        <div class="flex flex-col md:flex-row gap-3">
+            <input type="text" placeholder="Paste video URL from TikTok, Instagram, etc." class="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+            <button class="bg-black text-white px-6 py-3 rounded-lg font-medium btn flex-shrink-0">
+                Analyze
+            </button>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="grid md:grid-cols-3 gap-8 mb-16">
+        <div class="bg-gray-50 rounded-xl p-6 text-left">
+            <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Audio Transcription</h3>
+            <p class="text-gray-600 text-sm">Our AI converts video audio to text for comprehensive analysis of claims.</p>
+        </div>
+        
+        <div class="bg-gray-50 rounded-xl p-6 text-left">
+            <div class="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Source Verification</h3>
+            <p class="text-gray-600 text-sm">We search the web for credible sources to verify claims made in the video.</p>
+        </div>
+        
+        <div class="bg-gray-50 rounded-xl p-6 text-left">
+            <div class="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Sentiment Analysis</h3>
+            <p class="text-gray-600 text-sm">NLP models analyze tone and emotional manipulation tactics in the content.</p>
+        </div>
+    </div>
+    
+    <!-- Results Preview -->
+    <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 border-b">
+                <h3 class="text-lg font-medium mb-1">Analysis Results</h3>
+                <p class="text-sm text-gray-500">Sample video: "Breaking news about climate policy"</p>
+            </div>
+            
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="truth-badge text-white px-3 py-1 rounded-full text-sm font-medium">
+                            75% True
+                        </div>
+                        <div class="ml-2 text-sm text-gray-500">Confidence score</div>
+                    </div>
+                    <button class="text-sm text-blue-600 hover:text-blue-800">View full report</button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="text-sm font-medium mb-1">Transcription Excerpt:</h4>
+                        <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded">"The new climate policy announced yesterday will reduce carbon emissions by 30% within the next decade..."</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-sm font-medium mb-1">Sources:</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-start">
+                                <div class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div class="ml-2 text-sm">
+                                    <span class="text-gray-800">EPA Official Report</span>
+                                    <span class="text-gray-500"> — Confirms 30% target but notes 15-year timeline, not 10</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </div>
+                                <div class="ml-2 text-sm">
+                                    <span class="text-gray-800">Claimed Economic Impact</span>
+                                    <span class="text-gray-500"> — No credible sources support the economic claims made</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Any JavaScript can be added here
+</script>
+{% endblock %}

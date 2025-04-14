@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}InstaTruth{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        
+        .btn {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .truth-badge {
+            background: linear-gradient(135deg, #4ade80, #2dd4bf);
+        }
+        
+        .fake-badge {
+            background: linear-gradient(135deg, #f87171, #fb7185);
+        }
+        
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="py-4 px-6 md:px-12 bg-white border-b border-gray-100">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-xl font-bold"><a href="{{ url_for('index') }}" class="text-black no-underline">InstaTruth</a></div>
+            <nav class="hidden md:block">
+                <ul class="flex space-x-8">
+                    <li><a href="{{ url_for('faq') }}" class="text-gray-600 hover:text-black transition-colors">How It Works</a></li>
+                    <li><a href="{{ url_for('about') }}" class="text-gray-600 hover:text-black transition-colors">About</a></li>
+                    <li><a href="{{ url_for('api') }}" class="text-gray-600 hover:text-black transition-colors">API</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="py-6 bg-gray-50">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="pt-4 border-t border-gray-200 text-center text-sm text-gray-500">
+                TnV &copy; 2025
+            </div>
+        </div>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

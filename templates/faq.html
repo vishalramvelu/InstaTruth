@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}InstaTruth - How It Works{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 md:px-12 py-16 max-w-4xl">
+    <h1 class="text-3xl md:text-4xl font-bold mb-6 text-center">How InstaTruth Works</h1>
+    <p class="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">Our AI-powered platform analyzes social media videos to separate fact from fiction.</p>
+    
+    <!-- Process Steps -->
+    <div class="space-y-16 mb-16">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="order-2 md:order-1">
+                <span class="text-sm font-semibold text-blue-600 mb-2 block">STEP 1</span>
+                <h2 class="text-2xl font-bold mb-4">Audio Transcription & Analysis</h2>
+                <p class="text-gray-600 mb-4">
+                    When you submit a video link, our system downloads the content and uses an advanced audio model to transcribe any spoken content into text. This gives us an accurate record of all claims being made.
+                </p>
+                <p class="text-gray-600">
+                    Our NLP models analyze the transcription for specific claims, statements of fact, and potentially misleading phrases, creating a structured dataset of verifiable points.
+                </p>
+            </div>
+            <div class="bg-gray-100 rounded-xl p-6 md:p-8 order-1 md:order-2">
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                            </div>
+                            <span class="font-medium">Audio Processing</span>
+                        </div>
+                        <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Complete</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded text-sm">
+                        <p class="font-medium mb-2">Transcription Result:</p>
+                        <p class="text-gray-600">"Studies show that this new treatment has a 90% success rate in clinical trials and could be available as early as next month..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="bg-gray-100 rounded-xl p-6 md:p-8">
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <span class="font-medium">Source Verification</span>
+                        </div>
+                        <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Complete</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded text-sm">
+                        <p class="font-medium mb-2">Sources Found:</p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 mt-0.5 mr-1.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Clinical trial data from National Health Institute (Phase 2 results only)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600 mt-0.5 mr-1.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>No sources confirm availability timeline</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <span class="text-sm font-semibold text-green-600 mb-2 block">STEP 2</span>
+                <h2 class="text-2xl font-bold mb-4">Source Verification</h2>
+                <p class="text-gray-600 mb-4">
+                    For each claim identified, our system conducts targeted web searches to find credible sources that either confirm or contradict the information. We prioritize authoritative sources like government websites, peer-reviewed journals, and established news outlets.
+                </p>
+                <p class="text-gray-600">
+                    Our verification engine ranks sources by credibility and relevance, providing transparency about where information is coming from and how reliable it is.
+                </p>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="order-2 md:order-1">
+                <span class="text-sm font-semibold text-purple-600 mb-2 block">STEP 3</span>
+                <h2 class="text-2xl font-bold mb-4">Sentiment & Bias Analysis</h2>
+                <p class="text-gray-600 mb-4">
+                    Beyond fact-checking, we analyze the emotional tone and potential bias in the content. Our NLP models identify emotional manipulation tactics, loaded language, and framing techniques that might be used to mislead viewers.
+                </p>
+                <p class="text-gray-600">
+                    This helps you understand not just if the information is true, but also how it's being presented and what psychological techniques may be at play.
+                </p>
+            </div>
+            <div class="bg-gray-100 rounded-xl p-6 md:p-8 order-1 md:order-2">
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                            </div>
+                            <span class="font-medium">Sentiment Analysis</span>
+                        </div>
+                        <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Complete</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded text-sm">
+                        <p class="font-medium mb-2">Analysis Results:</p>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs text-gray-600">Emotional language</span>
+                                    <span class="text-xs font-medium">High</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-yellow-400 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs text-gray-600">Potential bias</span>
+                                    <span class="text-xs font-medium">Medium</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-yellow-400 rounded-full" style="width: 50%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="bg-gray-100 rounded-xl p-6 md:p-8">
+                <div class="bg-white rounded-lg p-4 shadow-sm text-center py-10">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div class="text-3xl font-bold mb-2">75% True</div>
+                    <p class="text-gray-600 mb-4">Overall Truth Score</p>
+                    <div class="px-4">
+                        <div class="w-full h-2 bg-gray-200 rounded-full mb-2">
+                            <div class="h-2 rounded-full truth-badge" style="width: 75%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>False</span>
+                            <span>True</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <span class="text-sm font-semibold text-blue-600 mb-2 block">STEP 4</span>
+                <h2 class="text-2xl font-bold mb-4">Comprehensive Report</h2>
+                <p class="text-gray-600 mb-4">
+                    All analyses are compiled into a detailed, easy-to-understand report that shows you exactly what claims were made, which ones are supported by credible sources, and where the information might be misleading or incomplete.
+                </p>
+                <p class="text-gray-600">
+                    Each report includes links to original sources, confidence scores for different claims, and an overall truth rating that helps you quickly gauge the reliability of the content.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-20">
+        <h2 class="text-2xl font-bold mb-6">Ready to verify content?</h2>
+        <a href="{{ url_for('index') }}" class="inline-flex items-center bg-black text-white px-6 py-3 rounded-lg font-medium btn">
+            <span>Try InstaTruth now</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+        </a>
+    </div>
+</div>
+{% endblock %}
