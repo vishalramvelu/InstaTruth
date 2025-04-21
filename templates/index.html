@@ -16,21 +16,30 @@
     
     <!-- Main headline -->
     <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
-        Verify the truth of<br>any social media video
+        Verify the truth of<br>the content you consume
     </h1>
     
     <!-- Subtitle -->
     <p class="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-        Our advanced AI analyzes TikTok, Instagram Reels, and viral videos to distinguish real news from misinformation.
+        Our advanced AI analyzes TikToks and Instagram Reels to distinguish real news from misinformation.
     </p>
     
     <!-- Link Input Form -->
     <div class="mb-12 max-w-2xl mx-auto">
-        <div class="flex flex-col md:flex-row gap-3">
-            <input type="text" placeholder="Paste video URL from TikTok, Instagram, etc." class="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
-            <button class="bg-black text-white px-6 py-3 rounded-lg font-medium btn flex-shrink-0">
+        <form id="analyze-form" action="/analyze" method="post" class="flex flex-col md:flex-row gap-3">
+            <input type="text" name="video_url" id="video-url" placeholder="Paste video URL from TikTok, Instagram, etc." class="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+            <button type="submit" class="bg-black text-white px-6 py-3 rounded-lg font-medium btn flex-shrink-0">
                 Analyze
             </button>
+        </form>
+        <div id="loading-indicator" class="hidden mt-4">
+            <div class="flex items-center justify-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Analyzing video... This may take a few moments.</span>
+            </div>
         </div>
     </div>
     
@@ -129,6 +138,116 @@
 
 {% block scripts %}
 <script>
-    // Any JavaScript can be added here
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('analyze-form');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const resultsContainer = document.getElementById('results-container');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading indicator
+            loadingIndicator.classList.remove('hidden');
+            
+            // Hide previous results if any
+            if (resultsContainer) {
+                resultsContainer.classList.add('hidden');
+            }
+            
+            // Get the form data
+            const formData = new FormData(form);
+            
+            // Send the request
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading indicator
+                loadingIndicator.classList.add('hidden');
+                
+                if (data.error) {
+                    // Handle error
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                
+                // Display results
+                displayResults(data);
+            })
+            .catch(error => {
+                // Hide loading indicator
+                loadingIndicator.classList.add('hidden');
+                
+                // Handle error
+                alert('Error: ' + error.message);
+            });
+        });
+        
+        function displayResults(data) {
+            // Create or show the results container
+            let container = document.getElementById('results-container');
+            
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'results-container';
+                container.className = 'bg-gray-50 rounded-xl p-6 shadow-sm mt-8';
+                
+                // Insert it after the form
+                form.parentNode.insertAdjacentElement('afterend', container);
+            } else {
+                container.classList.remove('hidden');
+            }
+            
+            // Populate results
+            container.innerHTML = `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6 border-b">
+                        <h3 class="text-lg font-medium mb-1">Analysis Results</h3>
+                        <p class="text-sm text-gray-500">Video analysis complete</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center">
+                                <div class="truth-badge text-white px-3 py-1 rounded-full text-sm font-medium">
+                                    ${data.truth_score}% True
+                                </div>
+                                <div class="ml-2 text-sm text-gray-500">Confidence score</div>
+                            </div>
+                            <button class="text-sm text-blue-600 hover:text-blue-800">View full report</button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-sm font-medium mb-1">Transcription:</h4>
+                                <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded">${data.transcription}</p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-sm font-medium mb-1">Sources:</h4>
+                                <div class="space-y-2">
+                                    ${data.sources.map(source => `
+                                        <div class="flex items-start">
+                                            <div class="w-5 h-5 bg-${source.verified ? 'green' : 'red'}-100 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-${source.verified ? 'green' : 'red'}-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${source.verified ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}" />
+                                                </svg>
+                                            </div>
+                                            <div class="ml-2 text-sm">
+                                                <span class="text-gray-800">${source.name}</span>
+                                                <span class="text-gray-500"> — ${source.description}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    });
 </script>
 {% endblock %}
