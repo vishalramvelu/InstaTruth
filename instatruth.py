@@ -6,10 +6,12 @@ import os
 
 model = whisper.load_model('small')
 
+# timestamp file names
 def standardize_fn(name):
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     return f"{name}_{timestamp}.mp4"
 
+# downlaod tiktok as .mp4
 def download_tt(url=None):
     if url == None:
         return None
@@ -44,6 +46,7 @@ def download_tt(url=None):
         print(f'[download_tt]: error downloading video: {e}')
         return None
 
+# downlaod reel as .mp4
 def download_reel(url):
     try:
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
@@ -74,6 +77,7 @@ def download_reel(url):
         print(f'[download_reel]: error downloading video: {e}')
         return None
 
+# convert mp4 to wav
 def mp4towav(filename):
     try:
         if filename == None:
@@ -97,14 +101,17 @@ def mp4towav(filename):
         print(f'[mp4towav]: error converting mp4 to wav: {e}')
         return None
     
+# parse text from .wav using whisper
 def parse_audio(filename):
     try:
         result = model.transcribe(filename)
+        os.remove(filename)
         return result['text']
     except Exception as e:
         print(f'[parse_audio]: error parsing audio: {e}')
         return None
 
+# transcribe tiktok video to text
 def tt_to_text(url=None):
     if url == None:
         print(f'[tt_to_text]: no url provided')
@@ -122,10 +129,10 @@ def tt_to_text(url=None):
 
     text = parse_audio(wavname)
     print(f'[tt_to_text]: {text}')
-    os.remove(wavname)
 
     return text
 
+# transcribe instagram reel to text
 def reel_to_text(url=None):
     if url == None:
         print(f'[reel_to_text]: no url provided')
@@ -143,14 +150,15 @@ def reel_to_text(url=None):
 
     text = parse_audio(wavname)
     print(f'[reel_to_text]: {text}')
-    os.remove(wavname)
 
     return text
 
+# tests
 if __name__ == "__main__":
     tturl = 'https://www.tiktok.com/@realdonaldtrump/video/7432520023958146335?is_from_webapp=1&sender_device=pc'
     reelurl = 'https://www.instagram.com/reel/DIPiq-8MFlf/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=='
     tttext = tt_to_text(tturl)
     reeltext = reel_to_text(reelurl)
-    print(f'[Tiktok]: {tttext}')
-    print(f'[Instagram]" {reeltext}')
+    os.system('clear')
+    print(f'\n[Tiktok]: {tttext}\n')
+    print(f'\n[Instagram]: {reeltext}\n')

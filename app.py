@@ -36,7 +36,15 @@ def analyze():
             return jsonify({'error': 'Failed to transcribe video'}), 400
         
         # do more analysis here
-        
+        # 1. extract claims
+        # 2. web search claims
+        # 3. verify claims and generate confidence score for each
+        # 4. analyze tone and emotional manipulation tactics in the content
+
+        # claims = [] # list of claims
+        # sources = [] # list of sources
+        # confidence = [] # list of confidence scores
+
         # jsonify result
         return jsonify({
             'success': True,
