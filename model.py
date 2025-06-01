@@ -1,169 +1,206 @@
-import pandas as pd
-import numpy as np
-#import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import classification_report
+import os
 import re
 import string
+import numpy as np
+import pandas as pd
+import torch
+from torch.utils.data import DataLoader, Dataset
+from transformers import DistilBertTokenizer, DistilBertModel
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
+from sklearn.metrics import mean_absolute_error, mean_squared_error, accuracy_score
 
-#this is base likelihood based on textual data
-
-
-
+# ------------- 1) Data Loading & Preprocessing -------------
 fake_news = pd.read_csv('Fake.csv')
 true_news = pd.read_csv('True.csv')
-
-
 fake_news['class'] = 0
 true_news['class'] = 1
+df_merge = pd.concat([fake_news, true_news], axis=0)
+df = df_merge.drop(["title", "subject", "date"], axis=1)
 
-df_merge = pd.concat([fake_news, true_news], axis = 0)
+print("doing preprocessing")
 
-df = df_merge.drop(["title", "subject","date"], axis = 1)
-news=df[df['class']==1]['text'][100]
-
-import re
-import string
-
-def wordopt(text):
+def wordopt(text: str) -> str:
     text = text.lower()
-    text = re.sub('\[.*?\]', '', text)
-    text = re.sub("\\W", " ", text) 
-    text = re.sub('https?://\S+|www\.\S+', '', text)
-    text = re.sub('<.*?>+', '', text)
-    text = re.sub('[%s]' % re.escape(string.punctuation), '', text)
-    text = re.sub('\n', '', text)
-    text = re.sub('\w*\d\w*', '', text)    
+    text = re.sub(r'\[.*?\]', '', text)
+    text = re.sub(r'\W', ' ', text)
+    text = re.sub(r'https?://\S+|www\.\S+', '', text)
+    text = re.sub(r'<.*?>+', '', text)
+    text = re.sub(r'[%s]' % re.escape(string.punctuation), '', text)
+    text = re.sub(r'\n', '', text)
+    text = re.sub(r'\w*\d\w*', '', text)
     return text
 
-
-# Sample text for testing
-sample_text = """
-
-
-An AI-generated image depicting tent camps for displaced Palestinians and a slogan that reads All Eyes on Rafah is sweeping social media.
-The post has been shared more than 47 million times by Instagram users including celebrities like Dua Lipa, Lewis Hamilton and Gigi and Bella Hadid.
-The image and the slogan went viral after an Israeli air strike and resulting fire at a camp for displaced Palestinians in the southern Gaza city of Rafah earlier this week.
-The Hamas-run health ministry said at least 45 people were killed and hundreds more wounded in the incident. Israel said it had targeted two Hamas commanders, and that the deadly fire was possibly caused by a secondary explosion.
-There has been widespread international condemnation of the Israeli strike, which Israeli Prime Minister Benjamin Netanyahu called a “tragic mishap”.
-
-
-"""""
-# Process the sample text
-processed_text = wordopt(sample_text)
 df["text"] = df["text"].apply(wordopt)
-x = df["text"]
-y = df["class"]
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, shuffle=True,stratify=y)
-x_val, x_test, y_val, y_test = train_test_split(x_test, y_test, test_size=0.5, shuffle=True)
+X_texts = df["text"].tolist()
+y_labels = df["class"].tolist()
 
-from sklearn.feature_extraction.text import TfidfVectorizer
+# Split into train/validation/test
+x_train, x_temp, y_train, y_temp = train_test_split(
+    X_texts, y_labels, test_size=0.25, shuffle=True, stratify=y_labels, random_state=42
+)
+x_val, x_test, y_val, y_test = train_test_split(
+    x_temp, y_temp, test_size=0.5, shuffle=True, stratify=y_temp, random_state=42
+)
 
-vectorization = TfidfVectorizer()
-xv_train = vectorization.fit_transform(x_train)
-xv_test = vectorization.transform(x_test)
-xv_val = vectorization.transform(x_val)
+print("starting bert model")
 
-from sklearn.linear_model import LogisticRegression
+# ------------- 2) Load DistilBERT Model & Tokenizer -------------
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
+bert_model = DistilBertModel.from_pretrained("distilbert-base-uncased")
+bert_model.to(device)
+bert_model.eval()
 
-LR = LogisticRegression()
-LR.fit(xv_train,y_train)
-pred_lr=LR.predict(xv_test)
+# ------------- 3) Dataset Class & Embedding Helper -------------
+MAX_LEN = 64
+BATCH_SIZE = 64
 
-from sklearn.metrics import mean_absolute_error,mean_squared_error
+class TextDataset(Dataset):
+    def __init__(self, texts, tokenizer, max_length=MAX_LEN):
+        self.texts = texts
+        self.tokenizer = tokenizer
+        self.max_length = max_length
 
-mae=mean_absolute_error(pred_lr,y_test)
-mse=mean_squared_error(pred_lr,y_test)
-print(mae,mse) #least the better
+    def __len__(self):
+        return len(self.texts)
 
-LR.score(xv_test, y_test) #more the better
+    def __getitem__(self, idx):
+        text = self.texts[idx]
+        encoding = self.tokenizer(
+            text,
+            max_length=self.max_length,
+            padding="max_length",
+            truncation=True,
+            return_tensors="pt",
+        )
+        return {
+            "input_ids": encoding["input_ids"].squeeze(0),
+            "attention_mask": encoding["attention_mask"].squeeze(0),
+        }
 
-from sklearn.ensemble import GradientBoostingClassifier
+def get_bert_embeddings(texts, tokenizer, model, device, batch_size=BATCH_SIZE, num_workers=4):
+    dataset = TextDataset(texts, tokenizer)
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=0)
+    all_embs = []
+    with torch.no_grad():
+        for batch in loader:
+            input_ids = batch["input_ids"].to(device)
+            attention_mask = batch["attention_mask"].to(device)
+            outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+            cls_emb = outputs.last_hidden_state[:, 0, :]
+            all_embs.append(cls_emb.cpu())
+    all_embs = torch.cat(all_embs, dim=0)
+    return all_embs.numpy()
+
+# ------------- 4) Compute or Load Cached Embeddings -------------
+if os.path.exists("X_train_emb.npy") and os.path.exists("y_train.npy"):
+    X_train_emb = np.load("X_train_emb.npy")
+    y_train_arr = np.load("y_train.npy")
+    X_val_emb   = np.load("X_val_emb.npy")
+    y_val_arr   = np.load("y_val.npy")
+    X_test_emb  = np.load("X_test_emb.npy")
+    y_test_arr  = np.load("y_test.npy")
+else:
+    print("Computing BERT embeddings on CPU (DistilBERT, MAX_LEN=64)…")
+    X_train_emb = get_bert_embeddings(x_train, tokenizer, bert_model, device, batch_size=BATCH_SIZE)
+    X_val_emb   = get_bert_embeddings(x_val,   tokenizer, bert_model, device, batch_size=BATCH_SIZE)
+    X_test_emb  = get_bert_embeddings(x_test,  tokenizer, bert_model, device, batch_size=BATCH_SIZE)
+
+    y_train_arr = np.array(y_train)
+    y_val_arr   = np.array(y_val)
+    y_test_arr  = np.array(y_test)
+
+    np.save("X_train_emb.npy", X_train_emb)
+    np.save("y_train.npy",     y_train_arr)
+    np.save("X_val_emb.npy",   X_val_emb)
+    np.save("y_val.npy",       y_val_arr)
+    np.save("X_test_emb.npy",  X_test_emb)
+    np.save("y_test.npy",      y_test_arr)
+
+# ------------- 5) Train Classifiers on BERT Embeddings -------------
+LR = LogisticRegression(max_iter=1000)
+LR.fit(X_train_emb, y_train_arr)
+pred_lr = LR.predict(X_test_emb)
+mae_lr = mean_absolute_error(pred_lr, y_test_arr)
+mse_lr = mean_squared_error(pred_lr, y_test_arr)
+acc_lr = accuracy_score(pred_lr, y_test_arr)
 
 GBC = GradientBoostingClassifier()
-GBC.fit(xv_train, y_train)
+GBC.fit(X_train_emb, y_train_arr)
+pred_gbc = GBC.predict(X_test_emb)
+mae_gbc = mean_absolute_error(pred_gbc, y_test_arr)
+mse_gbc = mean_squared_error(pred_gbc, y_test_arr)
+acc_gbc = accuracy_score(pred_gbc, y_test_arr)
 
-pred_gbc = GBC.predict(xv_test)
-GBC.score(xv_test, y_test)
+RFC = RandomForestClassifier(n_estimators=100, random_state=42)
+RFC.fit(X_train_emb, y_train_arr)
+pred_rfc = RFC.predict(X_test_emb)
+mae_rfc = mean_absolute_error(pred_rfc, y_test_arr)
+mse_rfc = mean_squared_error(pred_rfc, y_test_arr)
+acc_rfc = accuracy_score(pred_rfc, y_test_arr)
 
-from sklearn.ensemble import RandomForestClassifier
+print(f"--- FAST BERT EMBEDDING RESULTS (CPU) ---")
+print(f"LR   → MAE: {mae_lr:.4f}, MSE: {mse_lr:.4f}, Accuracy: {acc_lr:.4f}")
+print(f"GBC  → MAE: {mae_gbc:.4f}, MSE: {mse_gbc:.4f}, Accuracy: {acc_gbc:.4f}")
+print(f"RFC  → MAE: {mae_rfc:.4f}, MSE: {mse_rfc:.4f}, Accuracy: {acc_rfc:.4f}")
 
-RFC = RandomForestClassifier(n_estimators=100)
-RFC.fit(xv_train, y_train)
-pred_rfc = RFC.predict(xv_test)
-RFC.score(xv_test, y_test)
-
-print("LR accuracy:", LR.score(xv_test, y_test))
-print("GBC accuracy:", GBC.score(xv_test, y_test))
-print("RFC accuracy:", RFC.score(xv_test, y_test))
-
-def output_lable(n):
-    if n == 0:
-        return "Fake News"
-    elif n == 1:
-        return "Not A Fake News"
-    
-def manual_testing(news):
-    testing_news = {"text":[news]}
-    new_def_test = pd.DataFrame(testing_news)
-    new_def_test["text"] = new_def_test["text"].apply(wordopt)
-    print(new_def_test.head())
-    
-    # vectorize
-    new_x_test = new_def_test["text"]
-    new_xv_test = vectorization.transform(new_x_test)
-    
-    # hard predictions
-    pred_LR  = LR.predict(new_xv_test)[0]
-    pred_GBC = GBC.predict(new_xv_test)[0]
-    pred_RFC = RFC.predict(new_xv_test)[0]
-    
-    # probabilities
-    prob_LR  = LR.predict_proba(new_xv_test)[0]
-    prob_GBC = GBC.predict_proba(new_xv_test)[0]
-    prob_RFC = RFC.predict_proba(new_xv_test)[0]
-    
-    # print them all
-    print(
-        "\n\nLR   → {:<12} (fake={:.2f}, real={:.2f})\n"
-        "GBC  → {:<12} (fake={:.2f}, real={:.2f})\n"
-        "RFC  → {:<12} (fake={:.2f}, real={:.2f})"
-        .format(
-            output_lable(pred_LR), prob_LR[0],  prob_LR[1],
-            output_lable(pred_GBC), prob_GBC[0], prob_GBC[1],
-            output_lable(pred_RFC), prob_RFC[0], prob_RFC[1],
-        )
+# ------------- 6) Manual Testing Function -------------
+def manual_testing_bert(text: str):
+    cleaned = wordopt(text)
+    encoding = tokenizer(
+        cleaned,
+        max_length=MAX_LEN,
+        padding="max_length",
+        truncation=True,
+        return_tensors="pt"
     )
-    
-    # final override at P(real) ≥ 0.2
-    final_label = "Not A Fake News" if prob_RFC[1] >= 0.15 else "Fake News"
-    print(f"\nFinal (LR @ thresh=0.2): {final_label}")
+    input_ids      = encoding["input_ids"].to(device)
+    attention_mask = encoding["attention_mask"].to(device)
+    with torch.no_grad():
+        out = bert_model(input_ids=input_ids, attention_mask=attention_mask)
+        cls_embed = out.last_hidden_state[:, 0, :].cpu().numpy()
+
+    def label_name(n):
+        return "Not A Fake News" if n == 1 else "Fake News"
+
+    lr_p  = LR.predict(cls_embed)[0]
+    gbc_p = GBC.predict(cls_embed)[0]
+    rfc_p = RFC.predict(cls_embed)[0]
+    print(f"LR  predicts:  {label_name(lr_p)}")
+    print(f"GBC predicts:  {label_name(gbc_p)}")
+    print(f"RFC predicts:  {label_name(rfc_p)}")
 
 
 
+
+sample_text = x_test[0]
+print("\n== Manual test on one example from the test set ==")
+manual_testing_bert(sample_text)
+
+new_text = "Senators introduced a short bipartisan climate bill to fund renewable energy projects across 10 states."
+print("\n== Manual test on a custom new snippet ==")
+manual_testing_bert(new_text)
 #summarizing
+
 
 
 
 from transformers import pipeline
 
-video_text = "LeBron James’s unparalleled blend of size, athleticism, and basketball IQ has " \
-"allowed him to dominate every facet of the game—scoring, playmaking, rebounding, and defense—across a remarkable 20-year career." \
-" He has led three different franchises to four NBA championships, proving his ability to elevate any team to the highest level. " \
-"With four league MVP awards and 19 All-Star selections, his individual honors reflect sustained excellence and consistency at an elite standard. " \
-"In February 2023, he surpassed Kareem Abdul-Jabbar to become the NBA’s all-time leading scorer, underscoring both his longevity and scoring " \
-"prowess. His playoff performances—highlighted by multiple 40-point elimination games and historic triple-doubles—showcase his clutch impact " \
-"when it matters most. Beyond raw statistics, LeBron’s adaptability—from high-flying scorer to pass-first facilitator—emphasizes his all-around" \
-"greatness. Off the court, his leadership extends into philanthropy and activism through initiatives like the I PROMISE School and vocal advocacy " \
-"for social justice. Taken together—statistical dominance, team success, longevity, versatility, and cultural influence—LeBron James’s career " \
-"makes a compelling case for him as the greatest basketball player of all time."
+video_text = "LeBron James is one of the best basketball players of all time. He dominates in scoring, playmaking," \
+"rebounding, and defense across 20 years in his career. He has led three different franchies to four championships showing" \
+"how he is able to do lead very well. In Febuary 2023 he passed Kareem Abdul-Jabbar to become NBA's all time leading scorer. " \
+"He is still continuing to play today for the Los Angeles Lakers and his currently teammates with Luka Doncic. " \
+"He is competing for a championship next season and remains optimistic about future. " 
 
-summarizer = pipeline("summarization", model = "facebook/bart-large-cnn") #load the summarizer process w pretrained tools
-summary = summarizer(video_text, max_length = 150, min_length = 30)[0]['summary_text'] #run summarizer on text to get desired output of x length
-print(summary)
-manual_testing(summary)
+
+#summarizer = pipeline("summarization", model = "facebook/bart-large-cnn") #load the summarizer process w pretrained tools
+#summary = summarizer(video_text, max_length = 150, min_length = 30)[0]['summary_text'] #run summarizer on text to get desired output of x length
+#print(summary)
+print("\n== Custom Test with Lebron James ==")
+manual_testing_bert(video_text)
 
 #search web for verification
 
