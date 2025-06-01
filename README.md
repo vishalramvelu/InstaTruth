@@ -1,3 +1,24 @@
 # InstaTruth
 
-Full stack web app to analyze links from tiktoks, insta reels, etc to identity whether given video is real news or fake news. Works by having audio model to convert videos to text then passed into ML/NLP model which analyzes video content to find sentimentality as well as web search using LLMs to find credible sources to verify. Information then returned to be presented on a well-formatted front end display with walkthrough for sources. 
+Full-stack web application to analyze tiktoks, insta reels, and other videos to identity whether given video is real news or fake news. 
+Workflow is having audio model to convert videos to text then passed into NLP (BERT) model which analyzes video content to find sentimentality.
+This is combined with web search using LLMs to find credible sources to verify. NLP + web search then used to find final result and presented 
+on clean display with walkthrough. 
+
+## Framework
+* Backend: Python, Flask, OpenAI Whisper, PostgreSQL, PyTorch, Scikit-learn, OpenAI SDK
+* Frontend: HTML, Tailwind CSS, Javascript, React
+* Deployed:
+
+## Features
+* OpenAI Whisper audio to text conversion
+* BERT NLP Model
+* OpenAI SDK + Google Custom Search
+* Deployed with
+
+## Build
+
+Link
+
+## Contributing
+Contributions are welcome! If you'd like to enhance this project or report issues, please submit a pull request or open an issue.
