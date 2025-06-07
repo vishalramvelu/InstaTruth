@@ -4,6 +4,7 @@ import string
 import numpy as np
 import pandas as pd
 import torch
+import joblib
 from torch.utils.data import DataLoader, Dataset
 from transformers import DistilBertTokenizer, DistilBertModel
 from sklearn.model_selection import train_test_split
@@ -122,6 +123,7 @@ else:
 # ------------- 5) Train Classifiers on BERT Embeddings -------------
 LR = LogisticRegression(max_iter=1000)
 LR.fit(X_train_emb, y_train_arr)
+joblib.dump(LR, "lr_model.joblib")
 pred_lr = LR.predict(X_test_emb)
 mae_lr = mean_absolute_error(pred_lr, y_test_arr)
 mse_lr = mean_squared_error(pred_lr, y_test_arr)
@@ -129,6 +131,7 @@ acc_lr = accuracy_score(pred_lr, y_test_arr)
 
 GBC = GradientBoostingClassifier()
 GBC.fit(X_train_emb, y_train_arr)
+joblib.dump(GBC, "gbc_model.joblib")
 pred_gbc = GBC.predict(X_test_emb)
 mae_gbc = mean_absolute_error(pred_gbc, y_test_arr)
 mse_gbc = mean_squared_error(pred_gbc, y_test_arr)
@@ -136,6 +139,7 @@ acc_gbc = accuracy_score(pred_gbc, y_test_arr)
 
 RFC = RandomForestClassifier(n_estimators=100, random_state=42)
 RFC.fit(X_train_emb, y_train_arr)
+joblib.dump(RFC, "rfc_model.joblib")
 pred_rfc = RFC.predict(X_test_emb)
 mae_rfc = mean_absolute_error(pred_rfc, y_test_arr)
 mse_rfc = mean_squared_error(pred_rfc, y_test_arr)
@@ -174,35 +178,6 @@ def manual_testing_bert(text: str):
 
 
 
-
-sample_text = x_test[0]
-print("\n== Manual test on one example from the test set ==")
-manual_testing_bert(sample_text)
-
-new_text = "Senators introduced a short bipartisan climate bill to fund renewable energy projects across 10 states."
-print("\n== Manual test on a custom new snippet ==")
-manual_testing_bert(new_text)
-#summarizing
-
-
-
-
-from transformers import pipeline
-
-video_text = "LeBron James is one of the best basketball players of all time. He dominates in scoring, playmaking," \
-"rebounding, and defense across 20 years in his career. He has led three different franchies to four championships showing" \
-"how he is able to do lead very well. In Febuary 2023 he passed Kareem Abdul-Jabbar to become NBA's all time leading scorer. " \
-"He is still continuing to play today for the Los Angeles Lakers and his currently teammates with Luka Doncic. " \
-"He is competing for a championship next season and remains optimistic about future. " 
-
-
-#summarizer = pipeline("summarization", model = "facebook/bart-large-cnn") #load the summarizer process w pretrained tools
-#summary = summarizer(video_text, max_length = 150, min_length = 30)[0]['summary_text'] #run summarizer on text to get desired output of x length
-#print(summary)
-print("\n== Custom Test with Lebron James ==")
-manual_testing_bert(video_text)
-
-#search web for verification
 
 
 

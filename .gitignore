@@ -1,5 +1,6 @@
 # Ignore NumPy and CSV data files
 *.npy
 *.csv
+*.joblib
 
 
