@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}InstaTruth - How It Works{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 md:px-12 py-16 max-w-4xl">
+    <h1 class="text-3xl md:text-4xl font-bold mb-6 text-center">How InstaTruth Works</h1>
+    <p class="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">Our advanced multi-step fact-checking system combines DistilBERT NLP classification with comprehensive web verification using Google Custom Search and DeepSeek AI analysis.</p>
+    
+    <!-- Process Steps -->
+    <div class="space-y-16 mb-16">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="order-2 md:order-1">
+                <span class="text-sm font-semibold text-blue-600 mb-2 block">STEP 1</span>
+                <h2 class="text-2xl font-bold mb-4">Audio Transcription & Analysis</h2>
+                <p class="text-gray-600 mb-4">
+                    When you submit a video link, our system downloads the content using yt-dlp and uses OpenAI Whisper to transcribe any spoken content into text with high accuracy.
+                </p>
+                <p class="text-gray-600">
+                    The transcribed text is then cleaned and prepared for analysis by our BERT-based natural language processing pipeline.
+                </p>
+            </div>
+            <div class="bg-gray-100 rounded-xl p-6 md:p-8 order-1 md:order-2">
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                            </div>
+                            <span class="font-medium">Audio Processing</span>
+                        </div>
+                        <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Complete</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded text-sm">
+                        <p class="font-medium mb-2">Transcription Result:</p>
+                        <p class="text-gray-600">"Studies show that this new treatment has a 90% success rate in clinical trials and could be available as early as next month..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="bg-gray-100 rounded-xl p-6 md:p-8">
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <span class="font-medium">Source Verification</span>
+                        </div>
+                        <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Complete</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded text-sm">
+                        <p class="font-medium mb-2">Sources Found:</p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 mt-0.5 mr-1.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Clinical trial data from National Health Institute (Phase 2 results only)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600 mt-0.5 mr-1.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>No sources confirm availability timeline</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <span class="text-sm font-semibold text-green-600 mb-2 block">STEP 2</span>
+                <h2 class="text-2xl font-bold mb-4">Multi-Step Claim Extraction & Verification</h2>
+                <p class="text-gray-600 mb-4">
+                    DeepSeek AI first extracts individual verifiable factual claims from the transcription. Each claim is then independently researched using Google Custom Search API to find credible supporting or contradicting sources.
+                </p>
+                <p class="text-gray-600">
+                    Each claim undergoes detailed fact-checking with source credibility weighting (.gov, .edu, major news outlets), providing granular analysis with confidence scores and evidence summaries.
+                </p>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="order-2 md:order-1">
+                <span class="text-sm font-semibold text-purple-600 mb-2 block">STEP 3</span>
+                <h2 class="text-2xl font-bold mb-4">DistilBERT NLP Classification</h2>
+                <p class="text-gray-600 mb-4">
+                    Simultaneously, our DistilBERT transformer model (110M parameters) processes the transcribed text to generate semantic embeddings, which are classified using a pre-trained Random Forest model for initial credibility assessment.
+                </p>
+                <p class="text-gray-600">
+                    This NLP analysis provides probability scores standardized to P(true) with confidence thresholds, offering an independent linguistic-based credibility assessment.
+                </p>
+            </div>
+            <div class="bg-gray-100 rounded-xl p-6 md:p-8 order-1 md:order-2">
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                            </div>
+                            <span class="font-medium">NLP Classification</span>
+                        </div>
+                        <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Complete</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded text-sm">
+                        <p class="font-medium mb-2">Classification Results:</p>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs text-gray-600">P(true) Score</span>
+                                    <span class="text-xs font-medium">0.72</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-green-400 rounded-full" style="width: 72%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs text-gray-600">Confidence</span>
+                                    <span class="text-xs font-medium">0.81</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-blue-400 rounded-full" style="width: 81%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="bg-gray-100 rounded-xl p-6 md:p-8">
+                <div class="bg-white rounded-lg p-4 shadow-sm text-center py-10">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div class="text-3xl font-bold mb-2">75% True</div>
+                    <p class="text-gray-600 mb-4">Overall Truth Score</p>
+                    <div class="px-4">
+                        <div class="w-full h-2 bg-gray-200 rounded-full mb-2">
+                            <div class="h-2 rounded-full truth-badge" style="width: 75%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>False</span>
+                            <span>True</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <span class="text-sm font-semibold text-blue-600 mb-2 block">STEP 4</span>
+                <h2 class="text-2xl font-bold mb-4">Dynamic Score Aggregation & Report</h2>
+                <p class="text-gray-600 mb-4">
+                    The system combines DistilBERT and web verification scores using dynamic confidence-based weighting. High-confidence web fact-checking (when available) takes precedence, while NLP analysis provides fallback assessment.
+                </p>
+                <p class="text-gray-600">
+                    Final reports include individual claim breakdowns, source credibility analysis, confidence scores for each component, and comprehensive summaries with final verdicts: "real", "fake", or "inconclusive".
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-20">
+        <h2 class="text-2xl font-bold mb-6">Ready to verify content?</h2>
+        <a href="{{ url_for('index') }}" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold btn shadow-lg hover:shadow-xl inline-flex items-center text-lg">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Try InstaTruth Now
+        </a>
+    </div>
+</div>
+{% endblock %}

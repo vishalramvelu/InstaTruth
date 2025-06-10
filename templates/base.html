@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}InstaTruth{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="py-4 px-6 md:px-12 bg-white border-b border-gray-100">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-xl font-bold"><a href="{{ url_for('index') }}" class="text-black no-underline">InstaTruth</a></div>
+            <nav class="hidden md:block">
+                <ul class="flex space-x-8">
+                    <li><a href="{{ url_for('faq') }}" class="text-gray-600 hover:text-black transition-colors">How It Works</a></li>
+                    <li><a href="{{ url_for('about') }}" class="text-gray-600 hover:text-black transition-colors">About</a></li>
+                    <li><a href="{{ url_for('api') }}" class="text-gray-600 hover:text-black transition-colors">API</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-white py-6 border-t border-gray-100">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center text-sm text-gray-500">
+                &copy; InstaTruth 2025
+            </div>
+        </div>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

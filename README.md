@@ -11,16 +11,31 @@ InstaTruth uses a two-stage approach to fact-checking:
 
 ## Features
 
-- **BERT Classification**: Uses DistilBERT embeddings with Random Forest Classifier for initial text analysis
-- **Web Search Integration**: Automatically searches Google for relevant sources
-- **LLM Fact-Checking**: DeepSeek AI analyzes search results against the original claim
-- **Confidence Scoring**: Provides probability scores and confidence levels for predictions
-- **Three-Class Output**: Classifies claims as "real", "fake", or "inconclusive"
+### Core Analysis Pipeline
+- **Video Processing**: Supports TikTok and Instagram video URLs with automatic download
+- **Speech-to-Text**: OpenAI Whisper transcribes video audio with 99.1% accuracy
+- **NLP Analysis**: Custom-trained 110M parameter DistilBERT model for semantic classification
+- **Individual Claim Extraction**: Automatically identifies and analyzes specific factual claims
+- **Multi-Step Web Verification**: Google Custom Search API integration with DeepSeek AI analysis
+- **Source Credibility Weighting**: Evaluates supporting vs contradicting evidence from multiple sources
+
+### Web Interface
+- **Real-time Progress Tracking**: Live analysis progress with detailed step indicators
+- **Access Key Authentication**: Secure beta access control system
+- **Session Persistence**: Results persist across page reloads and browser sessions
+- **Responsive Design**: Mobile-friendly interface with TailwindCSS
+- **Comprehensive Results Display**: Individual claim analysis with evidence summaries
+
+### Output & Scoring
+- **Combined Confidence Scoring**: Weighted results from NLP and web verification
+- **Three-Class Classification**: "Real", "Fake", or "Inconclusive" verdicts
+- **Individual Claim Confidence**: Per-claim analysis with supporting/contradicting source counts
+- **Evidence Summaries**: Detailed explanations for each factual determination
 
 ## Setup
 
 1. Install dependencies:
-- Requires `python3 --version == 3.11`
+- Requires `python3 --version == 3.11.3`
 ```bash
 pip3 install -r requirements.txt
 ```
@@ -30,27 +45,24 @@ pip3 install -r requirements.txt
 DEEPSEEK_KEY=your-key
 GOOG_CSE_ID=your-key
 GOOG_KEY=your-key
+ACCESS_KEY=access-key (you decide)
+FLASK_SECRET=flask-secret (you decide)
 ```
 
 3. Download model:
-- Use `git lfs pull` for complete `rfc_model.joblib`
+- Use `git lfs pull` to download complete `rfc_model.joblib`
 
 ## Usage
 
-### Basic Usage
-```python
-
+```bash
+python3 app.py
 ```
 
-### Evaluate Transcript
-```python
-from instatruth import evaluate_transcript
+## Troubleshooting
+If you are having issues running the program, try:
+- `brew install ffmpeg`
+- `python3 fixcert.py`
 
-evaluate_transcript("claim or statement to fact-check")
-```
-
-## API Dependencies
-
-- **Google Custom Search API**: For retrieving relevant web sources
-- **OpenRouter API**: For accessing DeepSeek AI model
-- **Hugging Face Transformers**: For BERT model and text summarization
+and check
+- `.env` setup
+- `rfc_model.joblib` pulled using `git lfs`

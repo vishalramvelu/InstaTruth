@@ -12,5 +12,11 @@ def GOOG_CSE_ID():
 def GOOG_KEY():
     return os.getenv('GOOG_KEY')
 
+def ACCESS_KEY():
+    return os.getenv('ACCESS_KEY')
+
+def FLASK_SECRET():
+    return os.getenv('FLASK_SECRET')
+
 if __name__ == '__main__':
-    print(f'GOOG_KEY > {GOOG_KEY()}')
+    print(f'ACCESS_KEY > {ACCESS_KEY()}')
