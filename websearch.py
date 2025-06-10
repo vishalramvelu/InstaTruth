@@ -1,7 +1,16 @@
 import json
 import os
 import requests
+import KEYS
 from transformers import pipeline
+
+# load keys & base endpoints
+GOOGLE_CSE_ID = KEYS.GOOG_CSE_ID()
+GOOGLE_API_KEY = KEYS.GOOG_KEY()
+CSE_URL = "https://www.googleapis.com/customsearch/v1"
+
+OPENROUTER_API_KEY = KEYS.DEEPSEEK_KEY()
+OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 # 1) Initialize a summarization pipeline (BART)
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
@@ -17,13 +26,6 @@ def summarize_transcript(transcript: str, max_length: int = 100) -> str:
         do_sample=False
     )
     return summary_list[0]["summary_text"]
-
-
-
-# env variable to access search engine
-GOOGLE_CSE_ID  = '4202d4528cf704c22'
-GOOGLE_API_KEY = 'AIzaSyB-YYb3YOrAXKs_ilEfG1jNngHhx_SUQ68'
-CSE_URL        = "https://www.googleapis.com/customsearch/v1"
 
 def google_search(query: str, num_results: int = 5):
     """
@@ -63,12 +65,6 @@ def google_search(query: str, num_results: int = 5):
             "formattedUrl": item.get("formattedUrl")
         })
     return results
-
-
-
-# Env varaible for LLM (deepseek ai)
-OPENROUTER_API_KEY = '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'
-OPENROUTER_URL     = 'https://openrouter.ai/api/v1/chat/completions'
 
 def deepseek_reason_over_results(results: list, claim_text: str, num_sources: int = 5):
     """

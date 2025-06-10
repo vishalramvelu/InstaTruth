@@ -1,6 +1,6 @@
-# Ignore NumPy and CSV data files
 *.npy
 *.csv
 *.joblib
-
-
+*.env
+/__pycache__
+/venv
