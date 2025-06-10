@@ -39,56 +39,14 @@ GOOG_KEY=your-key
 
 ### Basic Usage
 ```python
-from Fullpipeline import main
 
-text = "Your claim or statement to fact-check"
-main(text)
 ```
 
-### Individual Components
-
-**BERT Classification Only:**
+### Evaluate Transcript
 ```python
-from bert import run_bert_model
+from instatruth import evaluate_transcript
 
-result = run_bert_model("Your text here")
-print(result["label"], result["score"])
-```
-
-**Web Search Only:**
-```python
-from testsearch import main
-
-main("Your text here")
-```
-
-## Model Performance
-
-The system uses three trained classifiers on BERT embeddings:
-- Logistic Regression
-- Gradient Boosting Classifier
-- Random Forest Classifier (primary)
-
-## Example Output
-
-```
-Bert output: {'label': 'real', 'score': 0.8234}
-
-=== GOOGLE SEARCH RESULTS ===
-1. Relevant news article
-   domain.com
-   Article snippet...
-
-=== DEEPSEEK FACT-CHECK SUMMARY ===
-Summary: Based on multiple sources, the claim appears to be supported...
-Confidence: 0.85
-Final Verdict: real
-
-=== COMBINED RESULT ===
-Combined score (P(true)): 0.8421
-Final label: real
-BERT score: 0.8234
-Fact-check score: 0.85
+evaluate_transcript("claim or statement to fact-check")
 ```
 
 ## API Dependencies
@@ -96,7 +54,3 @@ Fact-check score: 0.85
 - **Google Custom Search API**: For retrieving relevant web sources
 - **OpenRouter API**: For accessing DeepSeek AI model
 - **Hugging Face Transformers**: For BERT model and text summarization
-
-## License
-
-This project is for educational and research purposes.
