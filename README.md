@@ -4,10 +4,13 @@ A hybrid fact-checking system that combines natural language processing and web 
 
 ## Visit the Site
 Feel free to check out the [website here!](https://instatruth.app/)
+
 <img width="1469" alt="Screenshot 2025-06-25 at 10 59 54 AM" src="https://github.com/user-attachments/assets/86789e37-2672-438f-86e4-c204e9251dd2" />
 
-
-
+## Framework
+* Backend: Python, Flask, Scikit-learn, PyTorch, OpenAI Whisper, DeepSeek API, Google Custom Search API
+* Frontend: Javascript, React, Tailwind CSS, HTML
+* Deployment: Docker, Railway 
 
 ## Overview
 
