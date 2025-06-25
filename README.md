@@ -2,6 +2,12 @@
 
 A hybrid fact-checking system that combines natural language processing and web search to verify the truthfulness of claims and statements made in short-form content (Tiktoks, Instagram Reels, Youtube Shorts, etc).
 
+## Visit the Site
+Feel free to check out the [website here!](https://instatruth.app/)
+<img width="1468" alt="Screenshot 2025-06-25 at 10 58 53 AM" src="https://github.com/user-attachments/assets/2f0914fb-c13e-486e-8039-16f8da3904cb" />
+
+
+
 ## Overview
 
 InstaTruth uses a two-stage approach to fact-checking:
