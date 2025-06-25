@@ -1,0 +1,6 @@
+*.npy
+*.csv
+*.joblib
+*.env
+/__pycache__
+/venv

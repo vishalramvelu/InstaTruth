@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}InstaTruth - Verify Social Media Videos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="gradient-bg text-white py-20 md:py-32">
+    <div class="container mx-auto px-6 md:px-12 text-center max-w-5xl">
+        <div class="animate-fade-in">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight">
+                Fact check<br>
+                <span class="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                    Tiktoks and Reels
+                </span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-blue-100 mb-12 max-w-3xl mx-auto leading-relaxed">
+                InstaTruth uses a custom-trained 110M DistilBERT NLP model with multi-step web verification using DeepSeek AI to analyze TikTok and Instagram content.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 md:px-6 lg:px-12 py-16 max-w-7xl">
+    
+    <!-- Analysis Form Section -->
+    <div class="-mt-10 mb-16">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl mx-auto border border-gray-100">
+            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Start Your Analysis</h2>
+            
+            {% if error_message %}
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.5 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <span class="text-red-800 text-sm">{{ error_message }}</span>
+                </div>
+            </div>
+            {% endif %}
+            
+            <form id="analyze-form" action="/analyze" method="post" class="space-y-4" autocomplete="off">
+                <div class="space-y-4">
+                    <input type="url" name="video_url" id="video-url" 
+                           placeholder="Paste TikTok or Instagram video URL here..." 
+                           class="w-full px-6 py-4 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg transition-all" 
+                           autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required>
+                    
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <input type="password" name="access_key" id="access-key" 
+                               placeholder="Enter access key..." 
+                               class="flex-grow px-6 py-4 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg transition-all" 
+                               autocomplete="new-password" required>
+                        <button type="submit" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold btn flex-shrink-0 text-lg shadow-lg hover:shadow-xl">
+                            <span class="flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Analyze Video
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <p class="font-medium mb-1">Access Key Required</p>
+                            <p>This helps us manage server resources as we are still under beta. Contact us to request a key!</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Progress Section -->
+            <div id="progress-section" class="hidden mt-8">
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm font-medium text-gray-700 mb-2">
+                        <span id="progress-text">Starting analysis...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div id="progress-bar" class="progress-bar h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Analysis Steps -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div id="step-1" class="analysis-step bg-gray-50 p-4 rounded-xl text-center">
+                        <div class="w-8 h-8 mx-auto mb-2 rounded-full bg-gray-300 flex items-center justify-center">
+                            <span class="text-sm font-bold text-gray-600">1</span>
+                        </div>
+                        <h4 class="font-semibold text-sm">Video Processing</h4>
+                        <p class="text-xs text-gray-600 mt-1">Downloading & transcribing with OpenAI Whisper</p>
+                    </div>
+                    <div id="step-2" class="analysis-step bg-gray-50 p-4 rounded-xl text-center">
+                        <div class="w-8 h-8 mx-auto mb-2 rounded-full bg-gray-300 flex items-center justify-center">
+                            <span class="text-sm font-bold text-gray-600">2</span>
+                        </div>
+                        <h4 class="font-semibold text-sm">NLP Analysis</h4>
+                        <p class="text-xs text-gray-600 mt-1">DistilBERT classification & claim extraction</p>
+                    </div>
+                    <div id="step-3" class="analysis-step bg-gray-50 p-4 rounded-xl text-center">
+                        <div class="w-8 h-8 mx-auto mb-2 rounded-full bg-gray-300 flex items-center justify-center">
+                            <span class="text-sm font-bold text-gray-600">3</span>
+                        </div>
+                        <h4 class="font-semibold text-sm">Fact Verification</h4>
+                        <p class="text-xs text-gray-600 mt-1">Google Search + DeepSeek AI analysis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Enhanced Features Section -->
+    <div class="mb-20">
+        <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">Advanced AI-Powered Analysis</h2>
+        <p class="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+            Our multi-step verification pipeline combines cutting-edge natural language processing with comprehensive web search to deliver accurate fact-checking results.
+        </p>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 text-left hover:shadow-lg transition-all duration-300 border border-blue-100">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-gray-800">Audio Transcription</h3>
+                <p class="text-gray-600 leading-relaxed mb-4">OpenAI Whisper state-of-the-art speech recognition converts video audio to text with high accuracy across multiple languages and accents.</p>
+                <div class="flex items-center text-sm text-blue-600 font-semibold">
+                    <span class="bg-blue-100 px-2 py-1 rounded-full">99.1% accuracy</span>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-8 text-left hover:shadow-lg transition-all duration-300 border border-green-100">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-gray-800">Multi-Step Verification</h3>
+                <p class="text-gray-600 leading-relaxed mb-4">Individual claim extraction and verification using Google Custom Search API with DeepSeek AI analysis for comprehensive fact-checking.</p>
+                <div class="flex items-center text-sm text-green-600 font-semibold">
+                    <span class="bg-green-100 px-2 py-1 rounded-full">Source credibility weighted</span>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-purple-50 to-violet-100 rounded-2xl p-8 text-left hover:shadow-lg transition-all duration-300 border border-purple-100">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-gray-800">DistilBERT Analysis</h3>
+                <p class="text-gray-600 leading-relaxed mb-4">Advanced transformer-based NLP model with Random Forest classification providing initial semantic analysis and confidence scoring.</p>
+                <div class="flex items-center text-sm text-purple-600 font-semibold">
+                    <span class="bg-purple-100 px-2 py-1 rounded-full">110M parameters</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('analyze-form');
+        
+        form.addEventListener('submit', function(e) {
+            // Show progress section immediately
+            document.getElementById('progress-section').classList.remove('hidden');
+            
+            // Start with first step
+            updateProgress(10, 'Starting analysis...');
+            updateStepStatus(1, 'active');
+            
+            // Simulate realistic progress timing
+            setTimeout(() => {
+                updateProgress(25, 'Downloading and processing video...');
+            }, 1000);
+            
+            setTimeout(() => {
+                updateProgress(45, 'Transcribing audio with OpenAI Whisper...');
+                updateStepStatus(1, 'completed');
+                updateStepStatus(2, 'active');
+            }, 3000);
+            
+            setTimeout(() => {
+                updateProgress(70, 'Running DistilBERT classification...');
+            }, 8000);
+            
+            setTimeout(() => {
+                updateProgress(85, 'Verifying claims with web search...');
+                updateStepStatus(2, 'completed');
+                updateStepStatus(3, 'active');
+            }, 15000);
+            
+            setTimeout(() => {
+                updateProgress(95, 'Finalizing analysis...');
+            }, 25000);
+            
+            // Disable the submit button to prevent double submission
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="flex items-center"><svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Analyzing...</span>';
+            }
+            
+            // Let the form submit normally - no delays
+        });
+        
+        function updateProgress(percent, text) {
+            document.getElementById('progress-bar').style.width = percent + '%';
+            document.getElementById('progress-percent').textContent = percent + '%';
+            document.getElementById('progress-text').textContent = text;
+        }
+        
+        function updateStepStatus(stepNum, status) {
+            const step = document.getElementById(`step-${stepNum}`);
+            const circle = step.querySelector('.w-8');
+            
+            // Reset classes
+            step.classList.remove('active');
+            circle.classList.remove('bg-gray-300', 'bg-blue-500', 'bg-green-500');
+            
+            if (status === 'active') {
+                step.classList.add('active');
+                circle.classList.add('bg-blue-500');
+                circle.innerHTML = '<svg class="w-4 h-4 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            } else if (status === 'completed') {
+                circle.classList.add('bg-green-500');
+                circle.innerHTML = '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+            } else {
+                circle.classList.add('bg-gray-300');
+                circle.innerHTML = `<span class="text-sm font-bold text-gray-600">${stepNum}</span>`;
+            }
+        }
+    });
+</script>
+{% endblock %}

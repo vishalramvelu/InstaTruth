@@ -1,0 +1,11 @@
+.gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.truth-badge {
+    background: linear-gradient(135deg, #4ade80, #2dd4bf);
+}
+
+.fake-badge {
+    background: linear-gradient(135deg, #f87171, #fb7185);
+}
