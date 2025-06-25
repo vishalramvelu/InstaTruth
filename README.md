@@ -1,6 +1,6 @@
 # InstaTruth
 
-A hybrid fact-checking system that combines natural language processing and web search to verify the truthfulness of claims and statements.
+A hybrid fact-checking system that combines natural language processing and web search to verify the truthfulness of claims and statements made in short-form content (Tiktoks, Instagram Reels, Youtube Shorts, etc).
 
 ## Overview
 
