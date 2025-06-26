@@ -46,7 +46,7 @@ FLASK_SECRET=flask-secret (you decide)
 3. Download model:
 - Use `git lfs pull` to download complete `rfc_model.joblib`
 
-## Usage
+## Local Usage
 
 ```bash
 python3 app.py
