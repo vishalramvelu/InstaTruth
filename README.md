@@ -21,26 +21,10 @@ InstaTruth uses a two-stage approach to fact-checking:
 
 ## Features
 
-### Core Analysis Pipeline
-- **Video Processing**: Supports TikTok and Instagram video URLs with automatic download
-- **Speech-to-Text**: OpenAI Whisper transcribes video audio with 99.1% accuracy
-- **NLP Analysis**: Custom-trained 110M parameter DistilBERT model for semantic classification
-- **Individual Claim Extraction**: Automatically identifies and analyzes specific factual claims
-- **Multi-Step Web Verification**: Google Custom Search API integration with DeepSeek AI analysis
-- **Source Credibility Weighting**: Evaluates supporting vs contradicting evidence from multiple sources
-
-### Web Interface
-- **Real-time Progress Tracking**: Live analysis progress with detailed step indicators
-- **Access Key Authentication**: Secure beta access control system
-- **Session Persistence**: Results persist across page reloads and browser sessions
-- **Responsive Design**: Mobile-friendly interface with TailwindCSS
-- **Comprehensive Results Display**: Individual claim analysis with evidence summaries
-
-### Output & Scoring
-- **Combined Confidence Scoring**: Weighted results from NLP and web verification
-- **Three-Class Classification**: "Real", "Fake", or "Inconclusive" verdicts
-- **Individual Claim Confidence**: Per-claim analysis with supporting/contradicting source counts
-- **Evidence Summaries**: Detailed explanations for each factual determination
+* NLP Analysis using 110M paramter DistilBERT model for semantic classifcation
+* Speech-to-Text using OpenAI Whisper transcribes video audio with 99.1 accuracy
+* Multi-Step Web Verification using Google custom search API with DeepSeek analysis
+* Detailed evidence summaries for each claim citing reasons for final output with sources linked
 
 ## Setup
 
@@ -76,3 +60,6 @@ If you are having issues running the program, try:
 and check
 - `.env` setup
 - `rfc_model.joblib` pulled using `git lfs`
+
+## Contributing
+Contributions are welcome! If you'd like to enhance this website or report any issues, please submit a pull request or open an issue. 
