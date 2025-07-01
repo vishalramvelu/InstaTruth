@@ -9,7 +9,7 @@ Feel free to check out the [website here!](https://instatruth.app/)
 
 ## Framework
 * Backend: Python, Flask, Scikit-learn, PyTorch, OpenAI Whisper, DeepSeek API, Google Custom Search API
-* Frontend: Javascript, React, Tailwind CSS, HTML
+* Frontend: Javascript, React, Next.js, Tailwind CSS, HTML
 * Deployment: Docker, Railway 
 
 ## Overview
